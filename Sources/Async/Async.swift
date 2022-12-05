@@ -61,3 +61,40 @@ public struct AsyncView<T>: View {
         }
     }
 }
+
+struct Test: View {
+    var body: some View {
+        AsyncView {
+            return await run()
+        }
+        .when(
+            success: { value in
+                Text("\(value)")
+            },
+            failure: { error in
+                Text(error.localizedDescription)
+            },
+            loading: {
+                ProgressView()
+            }
+        )
+    }
+
+    func run() async -> Int {
+        do {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+        } catch {
+            // Ignore
+        }
+        return 1
+    }
+}
+
+struct Test2: View {
+    @StateObject var async: AsyncValue<Int> = .init {
+        <#code#>
+    }
+    var body: some View {
+
+    }
+}
