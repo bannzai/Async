@@ -35,7 +35,7 @@ public class AsyncValue<T>: ObservableObject {
     }
 }
 
-public struct Async<T>: View {
+public struct AsyncView<T>: View {
     @StateObject var async: AsyncValue<T>
 
     public init(_ task: Task<T, Error>) {
@@ -64,7 +64,7 @@ public struct Async<T>: View {
 
 struct Test: View {
     var body: some View {
-        Async {
+        AsyncView {
             return await run()
         }
         .when(
