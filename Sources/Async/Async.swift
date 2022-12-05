@@ -47,9 +47,7 @@ public struct Async<T>: DynamicProperty {
 
     }
 
-    public var wrappedValue: AsyncValue<T>.State {
-        async.state
-    }
+    public var wrappedValue: AsyncValue<T> { async }
 }
 
 public struct AsyncView<T>: View {
