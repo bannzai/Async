@@ -35,6 +35,20 @@ public class AsyncValue<T>: ObservableObject {
     }
 }
 
+@propertyWrapper
+public struct Async<T>: DynamicProperty {
+    @StateObject var async: AsyncValue<T>
+
+    public init(_ task: Task<T, Error>) {
+        _async = StateObject(wrappedValue: .init(task))
+    }
+
+    public var wrappedValue: AsyncValue<T>.State {
+        async.state
+    }
+
+}
+
 public struct AsyncView<T>: View {
     @StateObject var async: AsyncValue<T>
 
