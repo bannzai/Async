@@ -6,9 +6,13 @@ public class AsyncValue<T>: ObservableObject {
         case failure(Error)
         case loading
     }
-    @Published public var state: State
 
-    public init(_ task: Task<T, Error>) {
+    @Published public var state: State = .loading
+    public init() {
+
+    }
+
+    public func callAsFunction(_ task: Task<T, Error>) {
         state = .loading
 
         Task {
@@ -21,7 +25,7 @@ public class AsyncValue<T>: ObservableObject {
         }
     }
 
-    public init(_ action: @escaping @Sendable () async throws -> T) {
+    public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) {
         state = .loading
 
         Task {
@@ -37,27 +41,26 @@ public class AsyncValue<T>: ObservableObject {
 
 @propertyWrapper
 public struct Async<T>: DynamicProperty {
-    @StateObject var async: AsyncValue<T>
+    @StateObject var async: AsyncValue<T> = .init()
 
-    public init(_ task: Task<T, Error>) {
-        _async = StateObject(wrappedValue: .init(task))
+    public init() {
+
     }
 
     public var wrappedValue: AsyncValue<T>.State {
         async.state
     }
-
 }
 
 public struct AsyncView<T>: View {
-    @StateObject var async: AsyncValue<T>
+    @StateObject var async: AsyncValue<T> = .init()
 
     public init(_ task: Task<T, Error>) {
-        _async = StateObject(wrappedValue: .init(task))
+        async(task)
     }
 
     public init(_ action: @escaping @Sendable () async throws -> T) {
-        _async = StateObject(wrappedValue: .init(action))
+        async(action)
     }
 
     public var body: some View {
