@@ -65,7 +65,7 @@ public struct AsyncView<T>: View {
 struct Test: View {
     var body: some View {
         AsyncView {
-            return await run()
+            await run()
         }
         .when(
             success: { value in
@@ -90,11 +90,3 @@ struct Test: View {
     }
 }
 
-struct Test2: View {
-    @StateObject var async: AsyncValue<Int> = .init {
-        <#code#>
-    }
-    var body: some View {
-
-    }
-}
