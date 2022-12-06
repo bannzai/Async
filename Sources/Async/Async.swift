@@ -20,6 +20,8 @@ public class _Async<T>: ObservableObject {
     }
 
     deinit {
+        debugPrint("_Async", #function)
+        
         if executingTask?.isCancelled == false {
             executingTask?.cancel()
         }
