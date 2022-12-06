@@ -27,7 +27,7 @@ public class AsyncValue<T>: ObservableObject {
         return self
     }
 
-    @discardableResult public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) -> Self {
+    @discardableResult public func callAsFunction(_ action: @escaping () async throws -> T) -> Self {
         state = .loading
 
         Task {
@@ -63,7 +63,7 @@ public struct AsyncView<T>: View {
         async(task)
     }
 
-    public init(_ action: @escaping @Sendable () async throws -> T) {
+    public init(_ action: @escaping () async throws -> T) {
         async(action)
     }
 
@@ -116,7 +116,7 @@ struct Test2: View {
     @Async<Int> var async
 
     var body: some View {
-        switch $async({ await run() }).state {
+        switch $async(run).state {
         case .success(let value):
             Text("\(value)")
         case .failure(let error):
@@ -124,11 +124,6 @@ struct Test2: View {
         case .loading:
             ProgressView()
         }
-    }
-
-    func x() {
-        let result = $async
-        print(result)
     }
 
     func run() async -> Int {
