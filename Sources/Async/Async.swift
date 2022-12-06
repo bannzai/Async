@@ -46,12 +46,13 @@ public class _Async<T>: ObservableObject {
 @propertyWrapper
 public struct Async<T>: DynamicProperty {
     @StateObject var async: _Async<T> = .init()
+    public typealias State = _Async<T>.State
 
     public init() {
 
     }
 
-    public var wrappedValue: _Async<T>.State { async.state }
+    public var wrappedValue: State { async.state }
 
     public var projectedValue: _Async<T> { async }
 }
