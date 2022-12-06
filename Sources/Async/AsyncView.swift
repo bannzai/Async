@@ -4,6 +4,7 @@ import SwiftUI
 /// Sutable for expressing the three states of `success`, `failure` and `loading`.
 ///
 /// Example:
+/// ```swift
 /// struct ContentView3: View {
 ///   var body: some View {
 ///     AsyncView(run, when: (
@@ -13,6 +14,7 @@ import SwiftUI
 ///     ))
 ///   }
 /// }
+/// ```
 ///
 public struct AsyncView<T, S: View, F: View, L: View>: View {
     public typealias When = (success: (T) -> S, failure: (Error) -> F, loading: () -> L)

@@ -157,11 +157,12 @@ public class _Async<T>: ObservableObject {
 }
 
 /// `Async` is a wrapped `_Async`. Basically usage to define with `@Async` for property in SwiftUI.View instead of @StateObject or @ObservedObject.
-/// 
+///
 /// Example:
 /// struct ContentView2: View {
 ///   @Async<Int> var async
 ///
+/// ```swift
 ///   var body: some View {
 ///     switch async(run).state {
 ///     case .success(let value):
@@ -173,6 +174,7 @@ public class _Async<T>: ObservableObject {
 ///     }
 ///   }
 /// }
+/// ```
 ///
 @propertyWrapper public struct Async<T>: DynamicProperty {
     @StateObject var async: _Async<T> = .init()
