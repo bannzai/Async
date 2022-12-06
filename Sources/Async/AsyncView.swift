@@ -2,6 +2,18 @@ import SwiftUI
 
 /// `AsyncView` is convenience build View with async task.
 /// Sutable for expressing the three states of `success`, `failure` and `loading`.
+///
+/// Example:
+/// struct ContentView3: View {
+///   var body: some View {
+///     AsyncView(run, when: (
+///       success: { Text("\($0)") },
+///       failure: { Text($0.localizedDescription) },
+///       loading: { ProgressView() }
+///     ))
+///   }
+/// }
+///
 public struct AsyncView<T, S: View, F: View, L: View>: View {
     public typealias When = (success: (T) -> S, failure: (Error) -> F, loading: () -> L)
 
