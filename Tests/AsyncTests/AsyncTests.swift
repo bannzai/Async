@@ -97,10 +97,55 @@ final class AsyncTests: XCTestCase {
 
         do { // loading
             let async = _Async<Int>()
-            
+
             XCTAssertEqual(async.value, nil)
             XCTAssertNil(async.error)
             XCTAssertTrue(async.isLoading)
         }
     }
+
+    func testStream() async throws {
+        do { // success
+            func stream() -> AsyncStream<Int> {
+                .init { continuation in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        continuation.yield(1)
+                    }
+                }
+            }
+
+            let async = _Async<Int>()
+            async(stream())
+            try await Task.sleep(nanoseconds: 2_000_000_000)
+
+            XCTAssertEqual(async.value, 1)
+            XCTAssertNil(async.error)
+            XCTAssertFalse(async.isLoading)
+        }
+
+        do { // failure
+            func stream() -> AsyncThrowingStream<Int, Error> {
+                .init { continuation in
+                    continuation.finish(throwing: TestError())
+                }
+            }
+
+            let async = _Async<Int>()
+            async(stream())
+            try await Task.sleep(nanoseconds: 2_000_000_000)
+
+            XCTAssertEqual(async.value, nil)
+            XCTAssertNotNil(async.error)
+            XCTAssertFalse(async.isLoading)
+        }
+
+        do { // loading
+            let async = _Async<Int>()
+
+            XCTAssertEqual(async.value, nil)
+            XCTAssertNil(async.error)
+            XCTAssertTrue(async.isLoading)
+        }
+    }
+
 }
