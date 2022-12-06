@@ -1,6 +1,6 @@
 import SwiftUI
 
-public class AsyncValue<T>: ObservableObject {
+public class _Async<T>: ObservableObject {
     public enum State {
         case success(T)
         case failure(Error)
@@ -45,19 +45,19 @@ public class AsyncValue<T>: ObservableObject {
 
 @propertyWrapper
 public struct Async<T>: DynamicProperty {
-    @StateObject var async: AsyncValue<T> = .init()
+    @StateObject var async: _Async<T> = .init()
 
     public init() {
 
     }
 
-    public var wrappedValue: AsyncValue<T>.State { async.state }
+    public var wrappedValue: _Async<T>.State { async.state }
 
-    public var projectedValue: AsyncValue<T> { async }
+    public var projectedValue: _Async<T> { async }
 }
 
 public struct AsyncView<T>: View {
-    @StateObject var async = AsyncValue<T>()
+    @StateObject var async = _Async<T>()
 
     public init(_ task: Task<T, Error>) {
         async(task)
