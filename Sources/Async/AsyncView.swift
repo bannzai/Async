@@ -5,7 +5,7 @@ import SwiftUI
 ///
 /// Example:
 /// ```swift
-/// struct ContentView3: View {
+/// struct ContentView: View {
 ///   var body: some View {
 ///     AsyncView(run, when: (
 ///       success: { Text("\($0)") },

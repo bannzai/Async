@@ -163,6 +163,7 @@ public class _Async<T>: ObservableObject {
 ///   @Async<Int> var async
 ///
 /// ```swift
+/// struct ContentView: View {
 ///   var body: some View {
 ///     switch async(run).state {
 ///     case .success(let value):
