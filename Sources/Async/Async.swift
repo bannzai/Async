@@ -107,7 +107,6 @@ public class _Async<T>: ObservableObject {
         return self
     }
 
-
     @discardableResult internal func callAsFunction(_ action: Action) -> Self {
         switch action {
         case .task(let task):
