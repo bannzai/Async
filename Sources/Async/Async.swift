@@ -12,7 +12,7 @@ public class AsyncValue<T>: ObservableObject {
 
     }
 
-    public func callAsFunction(_ task: Task<T, Error>) {
+    @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
         state = .loading
 
         Task {
@@ -23,9 +23,11 @@ public class AsyncValue<T>: ObservableObject {
                 self.state = .failure(error)
             }
         }
+
+        return self
     }
 
-    public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) {
+    @discardableResult public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) -> Self {
         state = .loading
 
         Task {
@@ -36,6 +38,8 @@ public class AsyncValue<T>: ObservableObject {
                 self.state = .failure(error)
             }
         }
+
+        return self
     }
 }
 
@@ -47,11 +51,13 @@ public struct Async<T>: DynamicProperty {
 
     }
 
-    public var wrappedValue: AsyncValue<T> { async }
+    public var wrappedValue: AsyncValue<T>.State { async.state }
+
+    public var projectedValue: AsyncValue<T> { async }
 }
 
 public struct AsyncView<T>: View {
-    @StateObject var async: AsyncValue<T> = .init()
+    @StateObject var async = AsyncValue<T>()
 
     public init(_ task: Task<T, Error>) {
         async(task)
@@ -105,3 +111,32 @@ struct Test: View {
     }
 }
 
+
+struct Test2: View {
+    @Async<Int> var async
+
+    var body: some View {
+        switch $async({ await run() }).state {
+        case .success(let value):
+            Text("\(value)")
+        case .failure(let error):
+            Text(error.localizedDescription)
+        case .loading:
+            ProgressView()
+        }
+    }
+
+    func x() {
+        let result = $async
+        print(result)
+    }
+
+    func run() async -> Int {
+        do {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+        } catch {
+            // Ignore
+        }
+        return 1
+    }
+}
