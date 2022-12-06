@@ -13,9 +13,16 @@ public class _Async<T>: ObservableObject {
     }
 
     @Published public var state: State = .loading
+    internal var executingTask: Task<Void, Never>?
 
     public init() {
         debugPrint("_Async", #function)
+    }
+
+    deinit {
+        if executingTask?.isCancelled == false {
+            executingTask?.cancel()
+        }
     }
 
     @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
@@ -23,7 +30,10 @@ public class _Async<T>: ObservableObject {
             return self
         }
 
-        Task { @MainActor in
+        if executingTask?.isCancelled == false {
+            executingTask?.cancel()
+        }
+        executingTask = Task { @MainActor in
             do {
                 let value = try await task.value
                 self.state = .success(value)
@@ -40,7 +50,10 @@ public class _Async<T>: ObservableObject {
             return self
         }
 
-        Task { @MainActor in
+        if executingTask?.isCancelled == false {
+            executingTask?.cancel()
+        }
+        executingTask = Task { @MainActor in
             do {
                 let value = try await action()
                 self.state = .success(value)
