@@ -10,6 +10,8 @@ public class _Async<T>: ObservableObject {
     internal enum Action {
         case task(Task<T, Error>)
         case action(() async throws -> T)
+        case stream(AsyncStream<T>)
+        case throwingStream(AsyncThrowingStream<T, Error>)
     }
 
     @Published public var state: State = .loading
@@ -21,7 +23,7 @@ public class _Async<T>: ObservableObject {
 
     deinit {
         debugPrint("_Async", #function)
-        
+
         if executingTask?.isCancelled == false {
             executingTask?.cancel()
         }
@@ -67,12 +69,55 @@ public class _Async<T>: ObservableObject {
         return self
     }
 
+    @discardableResult public func callAsFunction(_ stream: AsyncStream<T>) -> Self {
+        guard case .loading = state else {
+            return self
+        }
+
+        if executingTask?.isCancelled == false {
+            executingTask?.cancel()
+        }
+        executingTask = Task { @MainActor in
+            for await element in stream {
+                self.state = .success(element)
+            }
+        }
+
+        return self
+    }
+
+    @discardableResult public func callAsFunction(_ throwingStream: AsyncThrowingStream<T, Error>) -> Self {
+        guard case .loading = state else {
+            return self
+        }
+
+        if executingTask?.isCancelled == false {
+            executingTask?.cancel()
+        }
+        executingTask = Task { @MainActor in
+            do {
+                for try await element in throwingStream {
+                    self.state = .success(element)
+                }
+            } catch {
+                self.state = .failure(error)
+            }
+        }
+
+        return self
+    }
+
+
     @discardableResult internal func callAsFunction(_ action: Action) -> Self {
         switch action {
         case .task(let task):
-            return self.callAsFunction(task)
+            return callAsFunction(task)
         case .action(let action):
-            return self.callAsFunction(action)
+            return callAsFunction(action)
+        case .stream(let stream):
+            return callAsFunction(stream)
+        case .throwingStream(let throwingStream):
+            return callAsFunction(throwingStream)
         }
     }
 }
@@ -105,6 +150,16 @@ public struct AsyncView<T, S: View, F: View, L: View>: View {
 
     public init(_ action: @escaping () async throws -> T, when: When) {
         self.action = .action(action)
+        self.when = when
+    }
+
+    public init(_ stream: AsyncStream<T>, when: When) {
+        self.action = .stream(stream)
+        self.when = when
+    }
+
+    public init(_ throwingStream: AsyncThrowingStream<T, Error>, when: When) {
+        self.action = .throwingStream(throwingStream)
         self.when = when
     }
 
