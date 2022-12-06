@@ -7,15 +7,22 @@ public class _Async<T>: ObservableObject {
         case loading
     }
 
+    enum Action {
+        case task(Task<T, Error>)
+        case action(() async throws -> T)
+    }
+
     @Published public var state: State = .loading
     public init() {
 
     }
 
     @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
-        state = .loading
+        guard case .loading = state else {
+            return self
+        }
 
-        Task {
+        Task { @MainActor in
             do {
                 let value = try await task.value
                 self.state = .success(value)
@@ -28,9 +35,11 @@ public class _Async<T>: ObservableObject {
     }
 
     @discardableResult public func callAsFunction(_ action: @escaping () async throws -> T) -> Self {
-        state = .loading
+        guard case .loading = state else {
+            return self
+        }
 
-        Task {
+        Task { @MainActor in
             do {
                 let value = try await action()
                 self.state = .success(value)
@@ -40,6 +49,15 @@ public class _Async<T>: ObservableObject {
         }
 
         return self
+    }
+
+    @discardableResult internal func callAsFunction(_ action: Action) -> Self {
+        switch action {
+        case .task(let task):
+            return self.callAsFunction(task)
+        case .action(let action):
+            return self.callAsFunction(action)
+        }
     }
 }
 
@@ -57,74 +75,32 @@ public struct Async<T>: DynamicProperty {
     public var projectedValue: _Async<T> { async }
 }
 
-public struct AsyncView<T>: View {
-    @StateObject var async = _Async<T>()
+public struct AsyncView<T, S: View, F: View, L: View>: View {
+    public typealias When = (success: (T) -> S, failure: (Error) -> F, loading: () -> L)
 
-    public init(_ task: Task<T, Error>) {
-        async(task)
+    let action: _Async<T>.Action
+    let when: When
+
+    public init(_ task: Task<T, Error>, when: When) {
+        self.action = .task(task)
+        self.when = when
     }
 
-    public init(_ action: @escaping () async throws -> T) {
-        async(action)
+    public init(_ action: @escaping () async throws -> T, when: When) {
+        self.action = .action(action)
+        self.when = when
     }
+
+    @Async<T> var async
 
     public var body: some View {
-        self
-    }
-
-    @ViewBuilder public func when<S: View, F: View, L: View>(success: (T) -> S, failure: (Error) -> F, loading: () -> L) -> some View {
-        switch async.state {
+        switch $async(action).state {
         case .success(let value):
-            success(value)
+            when.success(value)
         case .failure(let error):
-            failure(error)
+            when.failure(error)
         case .loading:
-            loading()
+            when.loading()
         }
-    }
-}
-
-struct Test: View {
-    var body: some View {
-        AsyncView(run)
-            .when(
-                success: { value in Text("\(value)") },
-                failure: { error in Text(error.localizedDescription) },
-                loading: { ProgressView() }
-            )
-    }
-
-    func run() async -> Int {
-        do {
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-        } catch {
-            // Ignore
-        }
-        return 1
-    }
-}
-
-
-struct Test2: View {
-    @Async<Int> var async
-
-    var body: some View {
-        switch $async(run).state {
-        case .success(let value):
-            Text("\(value)")
-        case .failure(let error):
-            Text(error.localizedDescription)
-        case .loading:
-            ProgressView()
-        }
-    }
-
-    func run() async -> Int {
-        do {
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-        } catch {
-            // Ignore
-        }
-        return 1
     }
 }
