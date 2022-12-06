@@ -32,10 +32,8 @@ public class _Async<T>: ObservableObject {
             executingTask?.cancel()
         }
     }
-}
 
-// MARK: - Call As Function
-extension _Async {
+    // MARK: - Call As Function
     @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
         guard case .loading = state else {
             return self
@@ -126,10 +124,9 @@ extension _Async {
             return callAsFunction(throwingStream)
         }
     }
-}
 
-// MARK: - Convenience accessor
-extension _Async {
+    // MARK: - Convenience accessor
+
     /// Retrieve value from a `state` when async task is already success.
     public var value: T? {
         if case let .success(value) = state {
@@ -151,20 +148,38 @@ extension _Async {
         }
         return false
     }
+
+    /// Reset to .loading state.
+    /// NOTE: After reset state, published change value to `View` and  revaluate View `body`.
+    public func resetState() {
+        state = .loading
+    }
 }
 
-// MARK: - Interface
 /// `Async` is a wrapped `_Async`. Basically usage to define with `@Async` for property in SwiftUI.View instead of @StateObject or @ObservedObject.
+/// For example:
+/// struct ContentView2: View {
+///   @Async<Int> var async
+///
+///   var body: some View {
+///     switch async(run).state {
+///     case .success(let value):
+///       Text("\(value)")
+///     case .failure(let error):
+///       Text(error.localizedDescription)
+///     case .loading:
+///       ProgressView()
+///     }
+///   }
+/// }
+///
 @propertyWrapper public struct Async<T>: DynamicProperty {
-    public typealias State = _Async<T>.State
-
     @StateObject var async: _Async<T> = .init()
 
     public init() {
         debugPrint("Async", #function)
     }
 
-    public var wrappedValue: State { async.state }
-
-    public var projectedValue: _Async<T> { async }
+    /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
+    public var wrappedValue: _Async<T> { async }
 }
