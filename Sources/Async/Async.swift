@@ -7,14 +7,15 @@ public class _Async<T>: ObservableObject {
         case loading
     }
 
-    enum Action {
+    internal enum Action {
         case task(Task<T, Error>)
         case action(() async throws -> T)
     }
 
     @Published public var state: State = .loading
-    public init() {
 
+    public init() {
+        debugPrint("_Async", #function)
     }
 
     @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
@@ -63,11 +64,12 @@ public class _Async<T>: ObservableObject {
 
 @propertyWrapper
 public struct Async<T>: DynamicProperty {
-    @StateObject var async: _Async<T> = .init()
     public typealias State = _Async<T>.State
 
-    public init() {
+    @StateObject var async: _Async<T> = .init()
 
+    public init() {
+        debugPrint("Async", #function)
     }
 
     public var wrappedValue: State { async.state }
