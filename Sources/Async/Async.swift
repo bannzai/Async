@@ -1,13 +1,15 @@
 import SwiftUI
 
-/// _Async is management state and published current state for async action. And execute passed async action for call as function.
+/// `_Async` is management state and published current state for async action. And execute passed async action for call as function.
 public class _Async<T>: ObservableObject {
+    /// `_Async.State` is presenting all state of `Async`.
     public enum State {
         case success(T)
         case failure(Error)
         case loading
     }
 
+    /// `_Async.Action` is presenting supported Action.
     internal enum Action {
         case task(Task<T, Error>)
         case action(() async throws -> T)
@@ -15,6 +17,7 @@ public class _Async<T>: ObservableObject {
         case throwingStream(AsyncThrowingStream<T, Error>)
     }
 
+    /// `state` is `loading` first.  after call `callAsFunction`, state changed to success or failure.
     @Published public private(set) var state: State = .loading
     internal var executingTask: Task<Void, Never>?
 
@@ -29,7 +32,10 @@ public class _Async<T>: ObservableObject {
             executingTask?.cancel()
         }
     }
+}
 
+// MARK: - Call As Function
+extension _Async {
     @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
         guard case .loading = state else {
             return self
@@ -124,18 +130,21 @@ public class _Async<T>: ObservableObject {
 
 // MARK: - Convenience accessor
 extension _Async {
+    /// Retrieve value from a `state` when async task is already success.
     public var value: T? {
         if case let .success(value) = state {
             return value
         }
         return nil
     }
+    /// Retrieve error from a `state` when async task is failure.
     public var error: Error? {
         if case let .failure(error) = state {
             return error
         }
         return nil
     }
+    /// isLoading is true means task is not yet execute.
     public var isLoading: Bool {
         if case .loading = state {
             return true
@@ -144,8 +153,9 @@ extension _Async {
     }
 }
 
-@propertyWrapper
-public struct Async<T>: DynamicProperty {
+// MARK: - Interface
+/// `Async` is a wrapped `_Async`. Basically usage to define with `@Async` for property in SwiftUI.View instead of @StateObject or @ObservedObject.
+@propertyWrapper public struct Async<T>: DynamicProperty {
     public typealias State = _Async<T>.State
 
     @StateObject var async: _Async<T> = .init()
