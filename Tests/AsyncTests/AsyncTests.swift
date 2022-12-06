@@ -15,6 +15,7 @@ final class AsyncTests: XCTestCase {
         let async = _Async<Int>()
         async(run)
         try await Task.sleep(nanoseconds: 2_000_000_000)
+
         XCTAssertEqual(async.value, 1)
         XCTAssertNil(async.error)
         XCTAssertFalse(async.isLoading)
