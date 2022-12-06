@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// `AsyncView` is convenience build View with async task.
+/// Sutable for expressing the three states of `success`, `failure` and `loading`.
 public struct AsyncView<T, S: View, F: View, L: View>: View {
     public typealias When = (success: (T) -> S, failure: (Error) -> F, loading: () -> L)
 
@@ -29,7 +31,7 @@ public struct AsyncView<T, S: View, F: View, L: View>: View {
     @Async<T> var async
 
     public var body: some View {
-        switch $async(action).state {
+        switch async(action).state {
         case .success(let value):
             when.success(value)
         case .failure(let error):
