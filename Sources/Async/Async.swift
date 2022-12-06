@@ -85,20 +85,12 @@ public struct AsyncView<T>: View {
 
 struct Test: View {
     var body: some View {
-        AsyncView {
-            await run()
-        }
-        .when(
-            success: { value in
-                Text("\(value)")
-            },
-            failure: { error in
-                Text(error.localizedDescription)
-            },
-            loading: {
-                ProgressView()
-            }
-        )
+        AsyncView(run)
+            .when(
+                success: { value in Text("\(value)") },
+                failure: { error in Text(error.localizedDescription) },
+                loading: { ProgressView() }
+            )
     }
 
     func run() async -> Int {
