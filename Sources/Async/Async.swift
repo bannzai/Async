@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// _Async is management state and published current state for async action. And execute passed async action for call as function.
 public class _Async<T>: ObservableObject {
     public enum State {
         case success(T)
@@ -14,7 +15,7 @@ public class _Async<T>: ObservableObject {
         case throwingStream(AsyncThrowingStream<T, Error>)
     }
 
-    @Published public var state: State = .loading
+    @Published public private(set) var state: State = .loading
     internal var executingTask: Task<Void, Never>?
 
     public init() {
@@ -118,6 +119,28 @@ public class _Async<T>: ObservableObject {
         case .throwingStream(let throwingStream):
             return callAsFunction(throwingStream)
         }
+    }
+}
+
+// MARK: - Convenience accessor
+extension _Async {
+    public var value: T? {
+        if case let .success(value) = state {
+            return value
+        }
+        return nil
+    }
+    public var error: Error? {
+        if case let .failure(error) = state {
+            return error
+        }
+        return nil
+    }
+    public var isLoading: Bool {
+        if case .loading = state {
+            return true
+        }
+        return false
     }
 }
 
