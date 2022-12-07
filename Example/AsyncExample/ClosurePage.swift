@@ -7,10 +7,11 @@ struct ClosurePage: View {
             Section("Use Async Property") {
                 UseAsyncPropertyWrapper()
             }
-
+            Section("Use AsyncView") {
+                UseAsyncView()
+            }
         }
         .listStyle(.grouped)
-
     }
 }
 
@@ -56,11 +57,24 @@ private struct UseAsyncPropertyWrapper: View {
 
 private struct UseAsyncView: View {
     var body: some View {
-        AsyncView(run, when: (
-            success: { Text($0) },
-            failure: { Text($0.errorMessage) },
-            loading: { ProgressView().progressViewStyle(.circular) }
-        ))
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Run basically")
+            AsyncView(run, when: (
+                success: { Text($0) },
+                failure: { Text($0.errorMessage) },
+                loading: { ProgressView().progressViewStyle(.circular) }
+            ))
+        }
+
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Run with error")
+
+            AsyncView(runWithError, when: (
+                success: { Text($0) },
+                failure: { Text($0.errorMessage) },
+                loading: { ProgressView().progressViewStyle(.circular) }
+            ))
+        }
     }
 }
 
@@ -73,7 +87,7 @@ private var i = 0
     defer {
         i += 1
     }
-    if i % 2 == 0 {
+    if i == 0 {
         throw "Error"
     } else {
         return "Done runWithError()"
