@@ -15,6 +15,8 @@
 		20F0E4BB294008CC0000C48A /* ClosurePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4BA294008CC0000C48A /* ClosurePage.swift */; };
 		20F0E4BD294008EE0000C48A /* StreamPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4BC294008EE0000C48A /* StreamPage.swift */; };
 		20F0E4BF294009100000C48A /* ThrowingStreamPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4BE294009100000C48A /* ThrowingStreamPage.swift */; };
+		20F0E4C329400A0E0000C48A /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4C229400A0E0000C48A /* Util.swift */; };
+		20F0E4CA29400ECD0000C48A /* Async in Frameworks */ = {isa = PBXBuildFile; productRef = 20F0E4C929400ECD0000C48A /* Async */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		20F0E4BA294008CC0000C48A /* ClosurePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosurePage.swift; sourceTree = "<group>"; };
 		20F0E4BC294008EE0000C48A /* StreamPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPage.swift; sourceTree = "<group>"; };
 		20F0E4BE294009100000C48A /* ThrowingStreamPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrowingStreamPage.swift; sourceTree = "<group>"; };
+		20F0E4C229400A0E0000C48A /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		20F0E4C729400E3B0000C48A /* Async */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Async; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20F0E4CA29400ECD0000C48A /* Async in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,8 +48,10 @@
 		20F0E49E294007F20000C48A = {
 			isa = PBXGroup;
 			children = (
+				20F0E4C629400E3B0000C48A /* Packages */,
 				20F0E4A9294007F20000C48A /* AsyncExample */,
 				20F0E4A8294007F20000C48A /* Products */,
+				20F0E4C829400ECD0000C48A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -61,6 +68,7 @@
 			children = (
 				20F0E4AA294007F20000C48A /* AsyncExampleApp.swift */,
 				20F0E4AC294007F20000C48A /* ContentView.swift */,
+				20F0E4C229400A0E0000C48A /* Util.swift */,
 				20F0E4B8294008BC0000C48A /* TaskPage.swift */,
 				20F0E4BA294008CC0000C48A /* ClosurePage.swift */,
 				20F0E4BC294008EE0000C48A /* StreamPage.swift */,
@@ -79,6 +87,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		20F0E4C629400E3B0000C48A /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				20F0E4C729400E3B0000C48A /* Async */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		20F0E4C829400ECD0000C48A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -95,6 +118,9 @@
 			dependencies = (
 			);
 			name = AsyncExample;
+			packageProductDependencies = (
+				20F0E4C929400ECD0000C48A /* Async */,
+			);
 			productName = AsyncExample;
 			productReference = 20F0E4A7294007F20000C48A /* AsyncExample.app */;
 			productType = "com.apple.product-type.application";
@@ -153,6 +179,7 @@
 				20F0E4B9294008BC0000C48A /* TaskPage.swift in Sources */,
 				20F0E4BB294008CC0000C48A /* ClosurePage.swift in Sources */,
 				20F0E4BD294008EE0000C48A /* StreamPage.swift in Sources */,
+				20F0E4C329400A0E0000C48A /* Util.swift in Sources */,
 				20F0E4BF294009100000C48A /* ThrowingStreamPage.swift in Sources */,
 				20F0E4AB294007F20000C48A /* AsyncExampleApp.swift in Sources */,
 			);
@@ -355,6 +382,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		20F0E4C929400ECD0000C48A /* Async */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Async;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 20F0E49F294007F20000C48A /* Project object */;
 }
