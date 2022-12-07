@@ -12,9 +12,6 @@ struct ContentView: View {
             NavigationLink("Stream") {
                 StreamPage()
             }
-            NavigationLink("ThrowingStream") {
-                ThrowingStreamPage()
-            }
         }
         .listStyle(.plain)
         .padding()

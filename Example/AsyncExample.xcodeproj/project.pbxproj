@@ -14,7 +14,6 @@
 		20F0E4B9294008BC0000C48A /* TaskPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4B8294008BC0000C48A /* TaskPage.swift */; };
 		20F0E4BB294008CC0000C48A /* ClosurePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4BA294008CC0000C48A /* ClosurePage.swift */; };
 		20F0E4BD294008EE0000C48A /* StreamPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4BC294008EE0000C48A /* StreamPage.swift */; };
-		20F0E4BF294009100000C48A /* ThrowingStreamPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4BE294009100000C48A /* ThrowingStreamPage.swift */; };
 		20F0E4C329400A0E0000C48A /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4C229400A0E0000C48A /* Util.swift */; };
 		20F0E4CA29400ECD0000C48A /* Async in Frameworks */ = {isa = PBXBuildFile; productRef = 20F0E4C929400ECD0000C48A /* Async */; };
 /* End PBXBuildFile section */
@@ -28,7 +27,6 @@
 		20F0E4B8294008BC0000C48A /* TaskPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPage.swift; sourceTree = "<group>"; };
 		20F0E4BA294008CC0000C48A /* ClosurePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosurePage.swift; sourceTree = "<group>"; };
 		20F0E4BC294008EE0000C48A /* StreamPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPage.swift; sourceTree = "<group>"; };
-		20F0E4BE294009100000C48A /* ThrowingStreamPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrowingStreamPage.swift; sourceTree = "<group>"; };
 		20F0E4C229400A0E0000C48A /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		20F0E4C729400E3B0000C48A /* Async */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Async; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -72,7 +70,6 @@
 				20F0E4B8294008BC0000C48A /* TaskPage.swift */,
 				20F0E4BA294008CC0000C48A /* ClosurePage.swift */,
 				20F0E4BC294008EE0000C48A /* StreamPage.swift */,
-				20F0E4BE294009100000C48A /* ThrowingStreamPage.swift */,
 				20F0E4AE294007F30000C48A /* Assets.xcassets */,
 				20F0E4B0294007F30000C48A /* Preview Content */,
 			);
@@ -180,7 +177,6 @@
 				20F0E4BB294008CC0000C48A /* ClosurePage.swift in Sources */,
 				20F0E4BD294008EE0000C48A /* StreamPage.swift in Sources */,
 				20F0E4C329400A0E0000C48A /* Util.swift in Sources */,
-				20F0E4BF294009100000C48A /* ThrowingStreamPage.swift in Sources */,
 				20F0E4AB294007F20000C48A /* AsyncExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
