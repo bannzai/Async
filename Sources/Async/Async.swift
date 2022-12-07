@@ -164,6 +164,8 @@ public class _Async<T>: ObservableObject {
 ///
 /// ```swift
 /// struct ContentView: View {
+///   @Async<String> var async
+///
 ///   var body: some View {
 ///     switch async(run).state {
 ///     case .success(let value):
