@@ -23,7 +23,7 @@ private struct UseAsyncPropertyWrapper: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run basically")
 
-            switch async(AsyncExample.task()).state {
+            switch async(Self.task()).state {
             case .success(let value):
                 Text(value)
             case .failure(let error):
@@ -37,7 +37,7 @@ private struct UseAsyncPropertyWrapper: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run with error")
 
-            switch asyncWithError(taskWithError()).state {
+            switch asyncWithError(Self.taskWithError()).state {
             case .success(let value):
                 Text(value)
             case .failure(let error):
@@ -53,13 +53,31 @@ private struct UseAsyncPropertyWrapper: View {
             }
         }
     }
+
+    private static func task() -> Task<String, Error> {
+        .init { @MainActor in
+            return "Done"
+        }
+    }
+
+    private static var i = 0
+    private static func taskWithError() -> Task<String, Error> {
+        .init { @MainActor in
+            if i == 0 {
+                i += 1
+                throw "Error"
+            } else {
+                return "Done runWithError()"
+            }
+        }
+    }
 }
 
 private struct UseAsyncView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run basically")
-            AsyncView(AsyncExample.task(), when: (
+            AsyncView(Self.task(), when: (
                 success: { Text($0) },
                 failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
@@ -69,31 +87,30 @@ private struct UseAsyncView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run with error")
 
-            AsyncView(taskWithError(), when: (
+            AsyncView(Self.taskWithError(), when: (
                 success: { Text($0) },
                 failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
             ))
         }
     }
-}
 
-private func task() -> Task<String, Error> {
-    .init { @MainActor in
-        return "Done"
-    }
-}
-
-private var i = 0
-private func taskWithError() -> Task<String, Error> {
-    .init { @MainActor in
-        defer {
-            i += 1
+    private static func task() -> Task<String, Error> {
+        .init { @MainActor in
+            return "Done"
         }
-        if i == 0 {
-            throw "Error"
-        } else {
-            return "Done runWithError()"
+    }
+
+    private static var i = 0
+    private static func taskWithError() -> Task<String, Error> {
+        .init { @MainActor in
+            if i == 0 {
+                i += 1
+                throw "Error"
+            } else {
+                return "Done runWithError()"
+            }
         }
     }
 }
+

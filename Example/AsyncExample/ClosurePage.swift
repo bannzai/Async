@@ -23,7 +23,7 @@ private struct UseAsyncPropertyWrapper: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run basically")
 
-            switch async(run).state {
+            switch async(Self.run).state {
             case .success(let value):
                 Text(value)
             case .failure(let error):
@@ -37,7 +37,7 @@ private struct UseAsyncPropertyWrapper: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run with error")
 
-            switch asyncWithError(runWithError).state {
+            switch asyncWithError(Self.runWithError).state {
             case .success(let value):
                 Text(value)
             case .failure(let error):
@@ -53,13 +53,27 @@ private struct UseAsyncPropertyWrapper: View {
             }
         }
     }
+
+    @MainActor private static func run() async throws -> String {
+        return "Done run()"
+    }
+
+    private static var i = 0
+    @MainActor private static func runWithError() async throws -> String {
+        if i == 0 {
+            i += 1
+            throw "Error"
+        } else {
+            return "Done runWithError()"
+        }
+    }
 }
 
 private struct UseAsyncView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run basically")
-            AsyncView(run, when: (
+            AsyncView(Self.run, when: (
                 success: { Text($0) },
                 failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
@@ -69,27 +83,25 @@ private struct UseAsyncView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run with error")
 
-            AsyncView(runWithError, when: (
+            AsyncView(Self.runWithError, when: (
                 success: { Text($0) },
                 failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
             ))
         }
     }
-}
 
-@MainActor private func run() async throws -> String {
-    return "Done run()"
-}
-
-private var i = 0
-@MainActor private func runWithError() async throws -> String {
-    defer {
-        i += 1
+    @MainActor private static func run() async throws -> String {
+        return "Done run()"
     }
-    if i == 0 {
-        throw "Error"
-    } else {
-        return "Done runWithError()"
+
+    private static var i = 0
+    @MainActor private static func runWithError() async throws -> String {
+        if i == 0 {
+            i += 1
+            throw "Error"
+        } else {
+            return "Done runWithError()"
+        }
     }
 }

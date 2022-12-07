@@ -23,7 +23,7 @@ private struct UseAsyncPropertyWrapper: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run basically")
 
-            switch async(stream()).state {
+            switch async(Self.stream()).state {
             case .success(let value):
                 Text(value)
             case .failure(let error):
@@ -37,7 +37,7 @@ private struct UseAsyncPropertyWrapper: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run with error")
 
-            switch asyncWithError(throwingStream()).state {
+            switch asyncWithError(Self.throwingStream()).state {
             case .success(let value):
                 Text(value)
             case .failure(let error):
@@ -53,13 +53,31 @@ private struct UseAsyncPropertyWrapper: View {
             }
         }
     }
+
+    private static func stream() -> AsyncStream<String> {
+        .init { continuation in
+            continuation.yield("Done")
+        }
+    }
+
+    private static var i = 0
+    private static func throwingStream() -> AsyncThrowingStream<String, Error> {
+        .init { continuation in
+            if i == 0 {
+                i += 1
+                continuation.finish(throwing: "Error")
+            } else {
+                continuation.yield("Done")
+            }
+        }
+    }
 }
 
 private struct UseAsyncView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run basically")
-            AsyncView(stream(), when: (
+            AsyncView(Self.stream(), when: (
                 success: { Text($0) },
                 failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
@@ -69,31 +87,30 @@ private struct UseAsyncView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Run with error")
 
-            AsyncView(throwingStream(), when: (
+            AsyncView(Self.throwingStream(), when: (
                 success: { Text($0) },
                 failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
             ))
         }
     }
-}
 
-private func stream() -> AsyncStream<String> {
-    .init { continuation in
-        continuation.yield("Done")
-    }
-}
-
-private var i = 0
-private func throwingStream() -> AsyncThrowingStream<String, Error> {
-    .init { continuation in
-        defer {
-            i += 1
-        }
-        if i == 0 {
-            continuation.finish(throwing: "Error")
-        } else {
+    private static func stream() -> AsyncStream<String> {
+        .init { continuation in
             continuation.yield("Done")
         }
     }
+
+    private static var i = 0
+    private static func throwingStream() -> AsyncThrowingStream<String, Error> {
+        .init { continuation in
+            if i == 0 {
+                i += 1
+                continuation.finish(throwing: "Error")
+            } else {
+                continuation.yield("Done")
+            }
+        }
+    }
 }
+
