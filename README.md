@@ -45,4 +45,4 @@ struct ContentView: View {
 ```
 
 ## LICENSE
-Teapot is released under the MIT license. See LICENSE for details.
+**Async** is released under the MIT license. See LICENSE for details.
