@@ -16,8 +16,8 @@ struct TaskPage: View {
 }
 
 private struct UseAsyncPropertyWrapper: View {
-    @Async<String> var async
-    @Async<String> var asyncWithError
+    @Async<String, Never> var async
+    @Async<String, Error> var asyncWithError
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -26,8 +26,6 @@ private struct UseAsyncPropertyWrapper: View {
             switch async(Self.task()).state {
             case .success(let value):
                 Text(value)
-            case .failure(let error):
-                Text(error.errorMessage)
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -54,7 +52,7 @@ private struct UseAsyncPropertyWrapper: View {
         }
     }
 
-    private static func task() -> Task<String, Error> {
+    private static func task() -> Task<String, Never> {
         .init { @MainActor in
             return "Done"
         }
