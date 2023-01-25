@@ -2,21 +2,21 @@ import SwiftUI
 import Async
 
 struct ContentView: View {
-    var body: some View {
-        List {
-            NavigationLink("Task") {
-                TaskPage()
-            }
-            NavigationLink("Closure") {
-                ClosurePage()
-            }
-            NavigationLink("Stream") {
-                StreamPage()
-            }
-        }
-        .listStyle(.plain)
-        .padding()
+  var body: some View {
+    List {
+      NavigationLink("Task") {
+        TaskPage()
+      }
+      NavigationLink("Closure") {
+        ClosurePage()
+      }
+      NavigationLink("Stream") {
+        StreamPage()
+      }
     }
+    .listStyle(.plain)
+    .padding()
+  }
 }
 
 struct UserView3: View {
@@ -61,18 +61,18 @@ struct UserView4: View {
 
 
 struct User: Identifiable, Codable {
-    let id: String
-    let name: String
+  let id: String
+  let name: String
 }
 class APIClient {
-    func fetch<T: Codable>(path: String) async throws -> T {
-        fatalError()
-    }
+  func fetch<T: Codable>(path: String) async throws -> T {
+    fatalError()
+  }
 }
 
 struct ErrorPage: View {
-    let error: Error
-    var body: some View { fatalError() }
+  let error: Error
+  var body: some View { fatalError() }
 }
 
 let apiClient = APIClient()
@@ -139,7 +139,7 @@ struct UserView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+  static var previews: some View {
+    ContentView()
+  }
 }
