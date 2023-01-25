@@ -16,8 +16,8 @@ struct StreamPage: View {
 }
 
 private struct UseAsyncPropertyWrapper: View {
-    @Async<String> var async
-    @Async<String> var asyncWithError
+    @Async<String, Never> var async
+    @Async<String, Error> var asyncWithError
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
