@@ -16,8 +16,8 @@ struct ClosurePage: View {
 }
 
 private struct UseAsyncPropertyWrapper: View {
-    @Async<String> var async
-    @Async<String> var asyncWithError
+    @Async<String, Error> var async
+    @Async<String, Error> var asyncWithError
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -54,12 +54,12 @@ private struct UseAsyncPropertyWrapper: View {
         }
     }
 
-    @MainActor private static func run() async throws -> String {
+    @Sendable private static func run() async throws -> String {
         return "Done run()"
     }
 
     private static var i = 0
-    @MainActor private static func runWithError() async throws -> String {
+    @Sendable private static func runWithError() async throws -> String {
         if i == 0 {
             i += 1
             throw "Error"
@@ -91,12 +91,12 @@ private struct UseAsyncView: View {
         }
     }
 
-    @MainActor private static func run() async throws -> String {
+    @Sendable private static func run() async throws -> String {
         return "Done run()"
     }
 
     private static var i = 0
-    @MainActor private static func runWithError() async throws -> String {
+    @Sendable private static func runWithError() async throws -> String {
         if i == 0 {
             i += 1
             throw "Error"
