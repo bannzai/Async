@@ -1,20 +1,19 @@
 import SwiftUI
 
 /// `_Async` is management state and published current state for async action. And execute passed async action for call as function.
-public class _Async<T>: ObservableObject {
+public class _Async<T, E: Error>: ObservableObject {
   /// `_Async.State` is presenting all state of `Async`.
   public enum State {
     case success(T)
-    case failure(Error)
+    case failure(E)
     case loading
   }
 
   /// `_Async.Action` is presenting supported Action.
   internal enum Action {
-    case task(Task<T, Error>)
-    case action(() async throws -> T)
+    case task(Task<T, E>)
     case stream(AsyncStream<T>)
-    case throwingStream(AsyncThrowingStream<T, Error>)
+    case throwingStream(AsyncThrowingStream<T, E>)
   }
 
   /// `state` is `loading` first.  after call `callAsFunction`, state changed to success or failure.
@@ -34,7 +33,7 @@ public class _Async<T>: ObservableObject {
   }
 
   // MARK: - Call As Function
-  @discardableResult public func callAsFunction(_ task: Task<T, Error>) -> Self {
+  @discardableResult public func callAsFunction(_ task: Task<T, E>) -> Self {
     guard case .loading = state else {
       return self
     }
@@ -43,18 +42,19 @@ public class _Async<T>: ObservableObject {
       executingTask?.cancel()
     }
     executingTask = Task { @MainActor in
-      do {
-        let value = try await task.value
-        self.state = .success(value)
-      } catch {
-        self.state = .failure(error)
-      }
+        let result = await task.result
+        switch result {
+        case .failure(let e):
+            self.state = .failure(e)
+        case .success(let value):
+            self.state = .success(value)
+        }
     }
 
     return self
   }
 
-  @discardableResult public func callAsFunction(_ action: @escaping () async throws -> T) -> Self {
+  @discardableResult public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) -> Self where E == Error {
     guard case .loading = state else {
       return self
     }
@@ -74,7 +74,7 @@ public class _Async<T>: ObservableObject {
     return self
   }
 
-  @discardableResult public func callAsFunction(_ stream: AsyncStream<T>) -> Self {
+  @discardableResult public func callAsFunction(_ stream: AsyncStream<T>) -> Self where E == Never {
     guard case .loading = state else {
       return self
     }
@@ -91,7 +91,7 @@ public class _Async<T>: ObservableObject {
     return self
   }
 
-  @discardableResult public func callAsFunction(_ throwingStream: AsyncThrowingStream<T, Error>) -> Self {
+  @discardableResult public func callAsFunction(_ throwingStream: AsyncThrowingStream<T, E>) -> Self {
     guard case .loading = state else {
       return self
     }
@@ -105,25 +105,36 @@ public class _Async<T>: ObservableObject {
           self.state = .success(element)
         }
       } catch {
-        self.state = .failure(error)
+        // FIXME: safe cast
+        self.state = .failure(error as! E)
       }
     }
 
     return self
   }
 
-  @discardableResult internal func callAsFunction(_ action: Action) -> Self {
+  @_disfavoredOverload @discardableResult internal func callAsFunction(_ action: Action) -> Self {
     switch action {
     case .task(let task):
       return callAsFunction(task)
-    case .action(let action):
-      return callAsFunction(action)
+    case .throwingStream(let throwingStream):
+      return callAsFunction(throwingStream)
+    case .stream:
+      fatalError(".action or .stream can't call this function")
+    }
+  }
+
+  @discardableResult internal func callAsFunction(_ action: Action) -> Self where E == Never {
+    switch action {
+    case .task(let task):
+      return callAsFunction(task)
     case .stream(let stream):
       return callAsFunction(stream)
     case .throwingStream(let throwingStream):
       return callAsFunction(throwingStream)
     }
   }
+
 
   // MARK: - Convenience accessor
 
@@ -179,13 +190,13 @@ public class _Async<T>: ObservableObject {
 /// }
 /// ```
 ///
-@propertyWrapper public struct Async<T>: DynamicProperty {
-  @StateObject var async: _Async<T> = .init()
+@propertyWrapper public struct Async<T, E: Error>: DynamicProperty {
+  @StateObject var async: _Async<T, E> = .init()
 
   public init() {
     debugPrint("Async", #function)
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
-  public var wrappedValue: _Async<T> { async }
+  public var wrappedValue: _Async<T, E> { async }
 }
