@@ -1,20 +1,6 @@
 import Async
 import SwiftUI
 
-struct TaskPage: View {
-  var body: some View {
-    List {
-      Section("Use Async Property") {
-        UseAsyncPropertyWrapper()
-      }
-      Section("Use AsyncView") {
-        UseAsyncView()
-      }
-    }
-    .listStyle(.grouped)
-  }
-}
-
 private struct UseAsyncPropertyWrapper: View {
   @Async<String, Never> var async
   @Async<String, Error> var asyncWithError
@@ -23,7 +9,7 @@ private struct UseAsyncPropertyWrapper: View {
     VStack(alignment: .leading, spacing: 4) {
       Text("Run basically")
 
-      switch async(Self.task()).state {
+      switch async(Self.stream()).state {
       case .success(let value):
         Text(value)
       case .loading:
@@ -35,7 +21,7 @@ private struct UseAsyncPropertyWrapper: View {
     VStack(alignment: .leading, spacing: 4) {
       Text("Run with error")
 
-      switch asyncWithError(Self.taskWithError()).state {
+      switch asyncWithError(Self.throwingStream()).state {
       case .success(let value):
         Text(value)
       case .failure(let error):
@@ -52,20 +38,20 @@ private struct UseAsyncPropertyWrapper: View {
     }
   }
 
-  private static func task() -> Task<String, Never> {
-    .init { @MainActor in
-      return "Done"
+  private static func stream() -> AsyncStream<String> {
+    .init { continuation in
+      continuation.yield("Done")
     }
   }
 
   private static var i = 0
-  private static func taskWithError() -> Task<String, Error> {
-    .init { @MainActor in
+  private static func throwingStream() -> AsyncThrowingStream<String, Error> {
+    .init { continuation in
       if i == 0 {
         i += 1
-        throw "Error"
+        continuation.finish(throwing: "Error")
       } else {
-        return "Done runWithError()"
+        continuation.yield("Done")
       }
     }
   }
@@ -75,9 +61,8 @@ private struct UseAsyncView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {
       Text("Run basically")
-      AsyncView(Self.task(), when: (
+      AsyncView(Self.stream(), when: (
         success: { Text($0) },
-        failure: { Text($0.errorMessage) },
         loading: { ProgressView().progressViewStyle(.circular) }
       ))
     }
@@ -85,7 +70,7 @@ private struct UseAsyncView: View {
     VStack(alignment: .leading, spacing: 4) {
       Text("Run with error")
 
-      AsyncView(Self.taskWithError(), when: (
+      AsyncView(Self.throwingStream(), when: (
         success: { Text($0) },
         failure: { Text($0.errorMessage) },
         loading: { ProgressView().progressViewStyle(.circular) }
@@ -93,22 +78,29 @@ private struct UseAsyncView: View {
     }
   }
 
-  private static func task() -> Task<String, Error> {
-    .init { @MainActor in
-      return "Done"
+  private static func stream() -> AsyncStream<String> {
+    .init { continuation in
+      continuation.yield("Done")
     }
   }
 
   private static var i = 0
-  private static func taskWithError() -> Task<String, Error> {
-    .init { @MainActor in
+  private static func throwingStream() -> AsyncThrowingStream<String, Error> {
+    .init { continuation in
       if i == 0 {
         i += 1
-        throw "Error"
+        continuation.finish(throwing: "Error")
       } else {
-        return "Done runWithError()"
+        continuation.yield("Done")
       }
     }
   }
 }
 
+
+#Preview {
+  UseAsyncPropertyWrapper(
+    async: .init(forPreviewState: .success("value")),
+    asyncWithError: .init(forPreviewState: .success("value2"))
+  )
+}
