@@ -24,8 +24,8 @@ public class _Async<T, E: Error>: ObservableObject {
 
   }
 
-  public init(initialState: State) {
-    self.state = state
+  public init(forPreviewState initialState: State) {
+    self.state = initialState
   }
 
   deinit {
@@ -199,8 +199,8 @@ public class _Async<T, E: Error>: ObservableObject {
     _async = StateObject(wrappedValue: .init())
   }
 
-  public init(initialState: _Async<T, E>.State) {
-    _async = StateObject(wrappedValue: .init(initialState: initialState))
+  public init(forPreviewState initialState: _Async<T, E>.State) {
+    _async = StateObject(wrappedValue: .init(forPreviewState: initialState))
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
