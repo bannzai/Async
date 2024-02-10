@@ -26,8 +26,6 @@ private struct UseAsyncPropertyWrapper: View {
             switch async(Self.stream()).state {
             case .success(let value):
                 Text(value)
-            case .failure(let error):
-                Text(error.errorMessage)
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
