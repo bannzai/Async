@@ -173,11 +173,11 @@ public class _Async<T, E: Error>: ObservableObject {
 ///
 /// Example:
 /// struct ContentView2: View {
-///   @Async<Int> var async
+///   @Async<Int, Error> var async
 ///
 /// ```swift
 /// struct ContentView: View {
-///   @Async<String> var async
+///   @Async<String, Error> var async
 ///
 ///   var body: some View {
 ///     switch async(run).state {

@@ -14,7 +14,7 @@ This method also allows access to `async.state` and the use of `alert(isPresente
 
 ```swift
 struct ContentView: View {
-  @Async<String> var async
+  @Async<String, Error> var async
 
   var body: some View {
     switch async(run).state {
