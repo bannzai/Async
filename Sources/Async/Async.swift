@@ -21,12 +21,14 @@ public class _Async<T, E: Error>: ObservableObject {
   internal var executingTask: Task<Void, Never>?
 
   public init() {
-    debugPrint("_Async", #function)
+
+  }
+
+  public init(initialState: State) {
+    self.state = state
   }
 
   deinit {
-    debugPrint("_Async", #function)
-
     if executingTask?.isCancelled == false {
       executingTask?.cancel()
     }
@@ -194,7 +196,7 @@ public class _Async<T, E: Error>: ObservableObject {
   @StateObject var async: _Async<T, E> = .init()
 
   public init() {
-    debugPrint("Async", #function)
+
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
