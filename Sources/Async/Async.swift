@@ -193,10 +193,14 @@ public class _Async<T, E: Error>: ObservableObject {
 /// ```
 ///
 @propertyWrapper public struct Async<T, E: Error>: DynamicProperty {
-  @StateObject var async: _Async<T, E> = .init()
+  @StateObject var async: _Async<T, E>
 
   public init() {
+    _async = StateObject(wrappedValue: .init())
+  }
 
+  public init(initialState: _Async<T, E>.State) {
+    _async = StateObject(wrappedValue: .init(initialState: initialState))
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
