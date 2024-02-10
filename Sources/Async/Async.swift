@@ -74,7 +74,7 @@ public class _Async<T, E: Error>: ObservableObject {
     return self
   }
 
-  @discardableResult public func callAsFunction(_ stream: AsyncStream<T>) -> Self where E == Never {
+  @discardableResult public func callAsFunction(_ stream: AsyncStream<T>) -> Self {
     guard case .loading = state else {
       return self
     }
@@ -119,8 +119,8 @@ public class _Async<T, E: Error>: ObservableObject {
       return callAsFunction(task)
     case .throwingStream(let throwingStream):
       return callAsFunction(throwingStream)
-    case .stream:
-      fatalError(".action or .stream can't call this function")
+    case .stream(let stream):
+      return callAsFunction(stream)
     }
   }
 
