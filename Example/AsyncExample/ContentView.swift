@@ -19,11 +19,6 @@ struct ContentView: View {
   }
 }
 
-struct ErrorPage: View {
-  let error: Error
-  var body: some View { fatalError() }
-}
-
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView()
