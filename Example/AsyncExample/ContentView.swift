@@ -19,16 +19,6 @@ struct ContentView: View {
   }
 }
 
-struct User: Identifiable, Codable {
-  let id: String
-  let name: String
-}
-class APIClient {
-  func fetch<T: Codable>(path: String) async throws -> T {
-    fatalError()
-  }
-}
-
 struct ErrorPage: View {
   let error: Error
   var body: some View { fatalError() }
