@@ -24,6 +24,10 @@ public class _Async<T, E: Error>: ObservableObject {
 
   }
 
+  public init(initialState: State) {
+    self.state = state
+  }
+
   deinit {
     if executingTask?.isCancelled == false {
       executingTask?.cancel()
