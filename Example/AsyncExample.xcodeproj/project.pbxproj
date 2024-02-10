@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20E4D4042B77108500E87026 /* Async in Frameworks */ = {isa = PBXBuildFile; productRef = 20E4D4032B77108500E87026 /* Async */; };
 		20F0E4AB294007F20000C48A /* AsyncExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4AA294007F20000C48A /* AsyncExampleApp.swift */; };
 		20F0E4AD294007F20000C48A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F0E4AC294007F20000C48A /* ContentView.swift */; };
 		20F0E4AF294007F30000C48A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20F0E4AE294007F30000C48A /* Assets.xcassets */; };
@@ -37,6 +38,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				20F0E4CA29400ECD0000C48A /* Async in Frameworks */,
+				20E4D4042B77108500E87026 /* Async in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +121,7 @@
 			name = AsyncExample;
 			packageProductDependencies = (
 				20F0E4C929400ECD0000C48A /* Async */,
+				20E4D4032B77108500E87026 /* Async */,
 			);
 			productName = AsyncExample;
 			productReference = 20F0E4A7294007F20000C48A /* AsyncExample.app */;
@@ -148,6 +151,9 @@
 				Base,
 			);
 			mainGroup = 20F0E49E294007F20000C48A;
+			packageReferences = (
+				20E4D4022B77108500E87026 /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 20F0E4A8294007F20000C48A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -381,7 +387,18 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		20E4D4022B77108500E87026 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		20E4D4032B77108500E87026 /* Async */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Async;
+		};
 		20F0E4C929400ECD0000C48A /* Async */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Async;
