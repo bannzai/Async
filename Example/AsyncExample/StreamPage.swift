@@ -79,7 +79,6 @@ private struct UseAsyncView: View {
             Text("Run basically")
             AsyncView(Self.stream(), when: (
                 success: { Text($0) },
-                failure: { Text($0.errorMessage) },
                 loading: { ProgressView().progressViewStyle(.circular) }
             ))
         }
