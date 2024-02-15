@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// `_Async` is management state and published current state for async action. And execute passed async action for call as function.
-public class _Async<T, E: Error>: ObservableObject {
+@Observable public class _Async<T, E: Error> {
   /// `_Async.State` is presenting all state of `Async`.
   public enum State {
     case success(T)
@@ -17,8 +17,8 @@ public class _Async<T, E: Error>: ObservableObject {
   }
 
   /// `state` is `loading` first.  after call `callAsFunction`, state changed to success or failure.
-  @Published public private(set) var state: State = .loading
-  internal var executingTask: Task<Void, Never>?
+  public private(set) var state: State = .loading
+  @ObservationIgnored internal var executingTask: Task<Void, Never>?
 
   public init() {
 
