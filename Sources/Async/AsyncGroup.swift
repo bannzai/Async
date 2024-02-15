@@ -1,5 +1,26 @@
 import SwiftUI
 
+/// `AsyncGroup` can group `@Async` to manage state for each async state..
+///
+/// Example:
+/// ```swift
+/// struct ContentView: View {
+///   @Async<String, Error> var async1
+///   @Async<String, Error> var async2
+///
+///   var body: some View {
+///     switch AsyncGroup(async1(run1), async2(run2)).state {
+///     case .success(let value1, let value2):
+///       Text("\(value1):\(value2)")
+///     case .failure(let error):
+///       Text(error.localizedDescription)
+///     case .loading:
+///       ProgressView()
+///     }
+///   }
+/// }
+/// ```
+///
 public struct AsyncGroup<each U, E: Error> {
   internal let asyncGroup: (repeat _Async<each U, E>)
 

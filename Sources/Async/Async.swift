@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// `_Async` is management state and published current state for async action. And execute passed async action for call as function.
+/// `_Async` is management state and published current state for async action. And automatically execute passed async action for call as function.
 @Observable public class _Async<T, E: Error> {
   /// `_Async.State` is presenting all state of `Async`.
   public enum State {
@@ -172,9 +172,6 @@ import SwiftUI
 /// `Async` is a wrapped `_Async`. Basically usage to define with `@Async` for property in SwiftUI.View instead of @StateObject or @ObservedObject.
 ///
 /// Example:
-/// struct ContentView2: View {
-///   @Async<Int, Error> var async
-///
 /// ```swift
 /// struct ContentView: View {
 ///   @Async<String, Error> var async
