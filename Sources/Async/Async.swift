@@ -193,14 +193,14 @@ import SwiftUI
 /// ```
 ///
 @propertyWrapper public struct Async<T, E: Error>: DynamicProperty {
-  @StateObject var async: _Async<T, E>
+  var async: _Async<T, E>
 
   public init() {
-    _async = StateObject(wrappedValue: .init())
+    async = .init()
   }
 
   public init(forPreviewState initialState: _Async<T, E>.State) {
-    _async = StateObject(wrappedValue: .init(forPreviewState: initialState))
+    async = .init(forPreviewState: initialState)
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
