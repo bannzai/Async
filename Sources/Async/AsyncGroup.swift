@@ -7,6 +7,17 @@ import SwiftUI
     self.asyncGroup = asyncGroup
   }
 
+  public var state: _Async<(repeat each U), E>.State {
+    if let value {
+      return .success(value)
+    }
+    if let error {
+      // FIXME: safe cast
+      return .failure(error as! E)
+    }
+    return .loading
+  }
+
   // MARK: - Convenience accessor
   /// Retrieve value from a each async`state` when all async task is already success.
   public var value: (repeat each U)? {
