@@ -1,6 +1,6 @@
 import SwiftUI
 
-@Observable public class AsyncGroup<each U, E: Error> {
+public struct AsyncGroup<each U, E: Error> {
   internal let asyncGroup: (repeat _Async<each U, E>)
 
   public init(_ asyncGroup: (repeat _Async<each U, E>)) {
