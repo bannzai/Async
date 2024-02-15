@@ -8,7 +8,7 @@ import SwiftUI
   }
 
   // MARK: - Convenience accessor
-  /// Retrieve value from a `state` when async task is already success.
+  /// Retrieve value from a each async`state` when all async task is already success.
   public var value: (repeat each U)? {
     func extractValue<A>(async: _Async<A, E>) throws -> A {
       if case let .success(value) = async.state {
@@ -27,7 +27,7 @@ import SwiftUI
 
   }
 
-  /// Retrieve error from a `state` when async task is failure.
+  /// Retrieve error from a each async `state` when any async task is failure.
   public var error: Error? {
     var captureError: E?
     func extractError<A>(async: _Async<A, E>) {
@@ -45,7 +45,7 @@ import SwiftUI
     return captureError
   }
 
-  /// isLoading is true means task is not yet execute.
+  /// isLoading is true means any async task is not yet execute.
   public var isLoading: Bool {
     var captureIsLoading: Bool = false
     func extractIsLoading<A>(async: _Async<A, E>) {
