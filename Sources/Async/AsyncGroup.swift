@@ -7,12 +7,7 @@ import SwiftUI
     self.asyncGroup = asyncGroup
   }
 
-  private struct UtilError: Error {
-
-  }
-
   // MARK: - Convenience accessor
-
   /// Retrieve value from a `state` when async task is already success.
   public var value: (repeat each U)? {
     func extractValue<A>(async: _Async<A, E>) throws -> A {
@@ -28,6 +23,10 @@ import SwiftUI
       return nil
     }
   }
+  private struct UtilError: Error {
+
+  }
+
   /// Retrieve error from a `state` when async task is failure.
   public var error: Error? {
     var captureError: E?
@@ -73,3 +72,4 @@ import SwiftUI
     repeat callResetState(async: (each asyncGroup))
   }
 }
+
