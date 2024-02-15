@@ -20,8 +20,7 @@ private struct UseAsyncPropertyWrapper: View {
     VStack(alignment: .leading, spacing: 4) {
       Text("Run basically")
 
-      switch 
-      AsyncGroup((
+      switch AsyncGroup((
         asyncWithError1(Self.stream()),
         asyncWithError2(Self.throwingStream())
       )).state {
