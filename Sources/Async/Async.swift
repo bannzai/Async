@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// `_Async` is management state and published current state for async action. And execute passed async action for call as function.
-public class _Async<T, E: Error>: ObservableObject {
+/// `_Async` is management state and published current state for async action. And automatically execute passed async action for call as function.
+@Observable public class _Async<T, E: Error> {
   /// `_Async.State` is presenting all state of `Async`.
   public enum State {
     case success(T)
@@ -17,8 +17,8 @@ public class _Async<T, E: Error>: ObservableObject {
   }
 
   /// `state` is `loading` first.  after call `callAsFunction`, state changed to success or failure.
-  @Published public private(set) var state: State = .loading
-  internal var executingTask: Task<Void, Never>?
+  public private(set) var state: State = .loading
+  @ObservationIgnored internal var executingTask: Task<Void, Never>?
 
   public init() {
 
@@ -172,9 +172,6 @@ public class _Async<T, E: Error>: ObservableObject {
 /// `Async` is a wrapped `_Async`. Basically usage to define with `@Async` for property in SwiftUI.View instead of @StateObject or @ObservedObject.
 ///
 /// Example:
-/// struct ContentView2: View {
-///   @Async<Int, Error> var async
-///
 /// ```swift
 /// struct ContentView: View {
 ///   @Async<String, Error> var async
@@ -193,14 +190,14 @@ public class _Async<T, E: Error>: ObservableObject {
 /// ```
 ///
 @propertyWrapper public struct Async<T, E: Error>: DynamicProperty {
-  @StateObject var async: _Async<T, E>
+  var async: _Async<T, E>
 
   public init() {
-    _async = StateObject(wrappedValue: .init())
+    async = .init()
   }
 
   public init(forPreviewState initialState: _Async<T, E>.State) {
-    _async = StateObject(wrappedValue: .init(forPreviewState: initialState))
+    async = .init(forPreviewState: initialState)
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
