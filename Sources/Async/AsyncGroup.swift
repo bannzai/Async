@@ -1,8 +1,5 @@
-//
-//  File.swift
-//  
-//
-//  Created by bannzai on 2024/02/15.
-//
+import SwiftUI
 
-import Foundation
+@Observable public class AsyncGroup<each U, E: Error> {
+
+}
