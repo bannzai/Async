@@ -40,6 +40,7 @@ public struct AsyncGroup<each U, E: Error> {
   }
 
   // MARK: - Convenience accessor
+
   /// Retrieve value from a each async`state` when all async task is already success.
   public var value: (repeat each U)? {
     func extractValue<A>(async: _Async<A, E>) throws -> A {
@@ -55,44 +56,37 @@ public struct AsyncGroup<each U, E: Error> {
       return nil
     }
   }
-  private struct UtilError: Error {
-
-  }
 
   /// Retrieve error from a each async `state` when any async task is failure.
   public var error: Error? {
-    var captureError: E?
-    func extractError<A>(async: _Async<A, E>) {
-      if captureError != nil {
-        return
-      }
-
+    func extractError<A>(async: _Async<A, E>) throws {
       if case let .failure(error) = async.state {
-        captureError = error
+        throw error
       }
     }
 
-    (repeat extractError(async: (each asyncGroup)))
-    
-    return captureError
+    do {
+      _ = (repeat try extractError(async: (each asyncGroup)))
+      return nil
+    } catch {
+      return error
+    }
   }
 
   /// isLoading is true means any async task is not yet execute.
   public var isLoading: Bool {
-    var captureIsLoading: Bool = false
-    func extractIsLoading<A>(async: _Async<A, E>) {
-      if captureIsLoading {
-        return
-      }
-      
+    func extractIsLoading<A>(async: _Async<A, E>) throws {
       if case .loading = async.state {
-        captureIsLoading = true
+        throw UtilError()
       }
     }
 
-    (repeat extractIsLoading(async: (each asyncGroup)))
-
-    return captureIsLoading
+    do {
+      _ = (repeat try extractIsLoading(async: (each asyncGroup)))
+      return false
+    } catch {
+      return true
+    }
   }
 
   /// Reset to .loading state.
@@ -101,7 +95,8 @@ public struct AsyncGroup<each U, E: Error> {
     func callResetState<A>(async: _Async<A, E>) {
       async.resetState()
     }
-    repeat callResetState(async: (each asyncGroup))
+    _ = (repeat callResetState(async: (each asyncGroup)))
   }
 }
 
+fileprivate struct UtilError: Error { }
