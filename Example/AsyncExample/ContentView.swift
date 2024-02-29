@@ -13,9 +13,6 @@ struct ContentView: View {
       NavigationLink("Stream") {
         StreamPage()
       }
-      NavigationLink("AsyncGroup") {
-        AsyncGroupPage()
-      }
     }
     .listStyle(.plain)
     .padding()
