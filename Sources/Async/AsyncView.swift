@@ -18,7 +18,6 @@ import SwiftUI
 ///
 public struct AsyncView<T, S: View, F: View, L: View>: View {
   public typealias When = (success: (T) -> S, failure: (any Error) -> F, loading: () -> L)
-  public typealias WhenNoError = (success: (T) -> S, loading: () -> L) where F == Never
 
   let action: _Async<T>.Action
   let when: When
@@ -27,19 +26,13 @@ public struct AsyncView<T, S: View, F: View, L: View>: View {
     self.action = .task(task)
     self.when = when
   }
-  public init(_ task: Task<T, Never>, when: WhenNoError) where F == Never {
-    self.action = .task(Task<T, any Error> {
-      return await task.value
-    })
-    self.when = (success: when.success, failure: { _ in fatalError() }, loading: when.loading)
-  }
-
+  
   public init(_ action: @escaping @Sendable () async throws -> T, when: When) {
     self.action = .task(.init(operation: action))
     self.when = when
   }
 
-  public init(_ stream: AsyncStream<T>, when: WhenNoError) where F == Never {
+  public init(_ stream: AsyncStream<T>, when: When) where F == Never {
     self.action = .stream(stream)
     self.when = (success: when.success, failure: { _ in fatalError() }, loading: when.loading)
   }
