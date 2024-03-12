@@ -1,19 +1,19 @@
 import SwiftUI
 
 /// `_Async` is management state and published current state for async action. And automatically execute passed async action for call as function.
-@Observable public class _Async<T, E: Error> {
+@Observable public class _Async<T> {
   /// `_Async.State` is presenting all state of `Async`.
   public enum State {
     case success(T)
-    case failure(E)
+    case failure(any Error)
     case loading
   }
 
   /// `_Async.Action` is presenting supported Action.
   internal enum Action {
-    case task(Task<T, E>)
+    case task(Task<T, any Error>)
     case stream(AsyncStream<T>)
-    case throwingStream(AsyncThrowingStream<T, E>)
+    case throwingStream(AsyncThrowingStream<T, any Error>)
   }
 
   /// `state` is `loading` first.  after call `callAsFunction`, state changed to success or failure.
@@ -35,7 +35,7 @@ import SwiftUI
   }
 
   // MARK: - Call As Function
-  @discardableResult public func callAsFunction(_ task: Task<T, E>) -> Self {
+  @discardableResult public func callAsFunction(_ task: Task<T, any Error>) -> Self {
     guard case .loading = state else {
       return self
     }
@@ -56,7 +56,7 @@ import SwiftUI
     return self
   }
 
-  @discardableResult public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) -> Self where E == Error {
+  @discardableResult public func callAsFunction(_ action: @escaping @Sendable () async throws -> T) -> Self {
     guard case .loading = state else {
       return self
     }
@@ -93,7 +93,7 @@ import SwiftUI
     return self
   }
 
-  @discardableResult public func callAsFunction(_ throwingStream: AsyncThrowingStream<T, E>) -> Self {
+  @discardableResult public func callAsFunction(_ throwingStream: AsyncThrowingStream<T, any Error>) -> Self {
     guard case .loading = state else {
       return self
     }
@@ -107,8 +107,7 @@ import SwiftUI
           self.state = .success(element)
         }
       } catch {
-        // FIXME: safe cast
-        self.state = .failure(error as! E)
+        self.state = .failure(error)
       }
     }
 
@@ -125,18 +124,6 @@ import SwiftUI
       return callAsFunction(stream)
     }
   }
-
-  @discardableResult internal func callAsFunction(_ action: Action) -> Self where E == Never {
-    switch action {
-    case .task(let task):
-      return callAsFunction(task)
-    case .stream(let stream):
-      return callAsFunction(stream)
-    case .throwingStream(let throwingStream):
-      return callAsFunction(throwingStream)
-    }
-  }
-
 
   // MARK: - Convenience accessor
 
@@ -189,17 +176,17 @@ import SwiftUI
 /// }
 /// ```
 ///
-@propertyWrapper public struct Async<T, E: Error>: DynamicProperty {
-  var async: _Async<T, E>
+@propertyWrapper public struct Async<T>: DynamicProperty {
+  var async: _Async<T>
 
   public init() {
     async = .init()
   }
 
-  public init(forPreviewState initialState: _Async<T, E>.State) {
+  public init(forPreviewState initialState: _Async<T>.State) {
     async = .init(forPreviewState: initialState)
   }
 
   /// Basically to use call as function or access to `_Async` properties other than `state`. E.g) value, error, isLoading
-  public var wrappedValue: _Async<T, E> { async }
+  public var wrappedValue: _Async<T> { async }
 }
