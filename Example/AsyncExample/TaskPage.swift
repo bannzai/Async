@@ -16,8 +16,8 @@ struct TaskPage: View {
 }
 
 private struct UseAsyncPropertyWrapper: View {
-  @Async<String, Never> var async
-  @Async<String, Error> var asyncWithError
+  @Async<String> var async
+  @Async<String> var asyncWithError
 
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {

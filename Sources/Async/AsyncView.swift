@@ -16,42 +16,37 @@ import SwiftUI
 /// }
 /// ```
 ///
-public struct AsyncView<T, E: Error, S: View, F: View, L: View>: View {
-  public typealias When = (success: (T) -> S, failure: (E) -> F, loading: () -> L)
-  public typealias WhenNoError = (success: (T) -> S, loading: () -> L) where E == Never, F == Never
+public struct AsyncView<T, S: View, F: View, L: View>: View {
+  public typealias When = (success: (T) -> S, failure: (any Error) -> F, loading: () -> L)
 
-  let action: _Async<T, E>.Action
+  let action: _Async<T>.Action
   let when: When
 
-  public init(_ task: Task<T, E>, when: When) {
+  public init(_ task: Task<T, any Error>, when: When) {
     self.action = .task(task)
     self.when = when
   }
-  public init(_ task: Task<T, Never>, when: WhenNoError) where E == Never, F == Never {
-    self.action = .task(task)
-    self.when = (success: when.success, failure: { _ in fatalError() }, loading: when.loading)
-  }
-
-  public init(_ action: @escaping @Sendable () async throws -> T, when: When) where E == Error {
+  
+  public init(_ action: @escaping @Sendable () async throws -> T, when: When) {
     self.action = .task(.init(operation: action))
     self.when = when
   }
 
-  public init(_ stream: AsyncStream<T>, when: WhenNoError) where E == Never, F == Never {
+  public init(_ stream: AsyncStream<T>, when: When) where F == Never {
     self.action = .stream(stream)
     self.when = (success: when.success, failure: { _ in fatalError() }, loading: when.loading)
   }
 
-  public init(_ throwingStream: AsyncThrowingStream<T, E>, when: When) {
+  public init(_ throwingStream: AsyncThrowingStream<T, any Error>, when: When) {
     self.action = .throwingStream(throwingStream)
     self.when = when
   }
-  public init(_ throwingStream: AsyncThrowingStream<T, E>, when: When) where E == Never, F == EmptyView {
+  public init(_ throwingStream: AsyncThrowingStream<T, any Error>, when: When) where F == EmptyView {
     self.action = .throwingStream(throwingStream)
     self.when = (success: when.success, failure: { _ in fatalError() }, loading: when.loading)
   }
 
-  @Async<T, E> var async
+  @Async<T> var async
 
   public var body: some View {
     switch async(action).state {
